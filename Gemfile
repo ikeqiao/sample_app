@@ -23,7 +23,7 @@ group :test do
   gem 'growl', '1.0.3'
   gem 'guard-spork', '0.3.2'
   gem 'spork', '0.9.2'
- # gem 'capybara-screenshot'
+  gem 'factory_girl_rails', '1.4.0'
 end
 
 # Gems used only for assets and not required
