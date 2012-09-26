@@ -11,6 +11,15 @@ describe "Authentication" do
     it { should have_selector('title', text: 'Sign in') }
   end
 
+  describe "not signin" do
+    before {visit root_path}
+    let(:user) { FactoryGirl.create(:user) }
+    it { should_not have_link('Users', href:users_path) }
+    it { should_not have_link('Profile', href: user_path(user)) }
+    it { should_not have_link('Setting', href: edit_user_path(user)) }
+    it { should_not have_link('Sign out', href: signout_path) }
+  end
+
   describe "signin" do
     before { visit signin_path }
 
@@ -37,6 +46,7 @@ describe "Authentication" do
       it { should have_selector('title', text: user.name) }
       it { should have_link('Users', href:users_path) }
       it { should have_link('Profile', href: user_path(user)) }
+      it { should have_link('Setting', href: edit_user_path(user)) }
       it { should have_link('Sign out', href: signout_path) }
       it { should_not have_link('Sign in', href: signin_path) }
 
@@ -84,7 +94,6 @@ describe "Authentication" do
           end
         end
       end
-
     end
 
     describe "as wrong user" do
@@ -112,6 +121,16 @@ describe "Authentication" do
       describe "submitting a DELETE request to the Users#destroy action" do
         before { delete user_path(user) }
         specify { response.should redirect_to(root_path) }        
+      end
+    end
+
+    describe "as admin user" do
+      let(:admin) { FactoryGirl.create(:admin) }
+
+      before { sign_in admin}
+      describe "submitting a DELETE request to the Users#destroy action" do
+        before { delete user_path(admin) }
+        specify { response.should redirect_to(root_path) }
       end
     end
   end
